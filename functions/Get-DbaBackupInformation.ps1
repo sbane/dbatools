@@ -228,7 +228,7 @@ function Get-DbaBackupInformation {
                         }
                     } else {
                         Write-Message -Message "Testing a folder $f" -Level Verbose
-                        $Files += $Check = read -Path $f -SqlInstance $server
+                        $Files += $Check = Get-XpDirTreeRestoreFile -Path $f -SqlInstance $server
                         if ($null -eq $check) {
                             Write-Message -Message "Nothing returned from $f" -Level Verbose
                         }
