@@ -228,7 +228,7 @@ function Get-DbaBackupInformation {
                         }
                     } else {
                         Write-Message -Message "Testing a folder $f" -Level Verbose
-                        $Files += $Check = Get-XpDirTreeRestoreFile -Path $f -SqlInstance $server
+                        $Files += $Check = read -Path $f -SqlInstance $server
                         if ($null -eq $check) {
                             Write-Message -Message "Nothing returned from $f" -Level Verbose
                         }
@@ -271,11 +271,13 @@ function Get-DbaBackupInformation {
                 $Files = $Files | Where-Object {$_.FullName -notlike '*\LOG\*'}
             }
 
-            Write-Message -Level Verbose -Message "Reading backup headers of $($Files.Count) files"
-            try {
-                $FileDetails = Read-DbaBackupHeader -SqlInstance $server -Path $Files -AzureCredential $AzureCredential -EnableException
-            } catch {
-                Stop-Function -Message "Failure reading backup header" -ErrorRecord $_ -Target $server -Continue
+            if ($Files.Count -gt 0){
+                Write-Message -Level Verbose -Message "Reading backup headers of $($Files.Count) files"
+                try {
+                    $FileDetails = Read-DbaBackupHeader -SqlInstance $server -Path $Files -AzureCredential $AzureCredential -EnableException
+                } catch {
+                    Stop-Function -Message "Failure reading backup header" -ErrorRecord $_ -Target $server -Continue
+                }
             }
 
             $groupdetails = $FileDetails | Group-Object -Property BackupSetGUID
