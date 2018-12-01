@@ -502,7 +502,7 @@ function Restore-DbaDatabase {
             begin {
                 Write-Message -Level InternalComment -Message "Starting"
                 Write-Message -Level Debug -Message "Parameters bound: $($PSBoundParameters.Keys -join ", ")"
-                
+
                 #region Validation
                 try {
                     $RestoreInstance = Connect-SqlInstance -SqlInstance $SqlInstance -SqlCredential $SqlCredential
@@ -513,7 +513,7 @@ function Restore-DbaDatabase {
                 if ($PSCmdlet.ParameterSetName -eq "Restore") {
                     $UseDestinationDefaultDirectories = $true
                     $paramCount = 0
-                    
+
                     if (!(Test-Bound "AllowContinue") -and $true -ne $AllowContinue) {
                         $AllowContinue = $false
                     }
@@ -534,7 +534,7 @@ function Restore-DbaDatabase {
                         Stop-Function -Category InvalidArgument -Message "To use ReplaceDbNameInFile you must specify DatabaseName"
                         return
                     }
-                    
+
                     if ((Test-Bound "DestinationLogDirectory") -and (Test-Bound "ReuseSourceFolderStructure")) {
                         Stop-Function -Category InvalidArgument -Message "The parameters DestinationLogDirectory and UseDestinationDefaultDirectories are mutually exclusive"
                         return
@@ -583,7 +583,7 @@ function Restore-DbaDatabase {
                         $PipeDatabaseName = $true
                     }
                 }
-                
+
                 if ($StatementTimeout -eq 0) {
                     Write-Message -Level Verbose -Message "Changing statement timeout to infinity"
                 } else {
@@ -591,13 +591,13 @@ function Restore-DbaDatabase {
                 }
                 $RestoreInstance.ConnectionContext.StatementTimeout = ($StatementTimeout * 60)
                 #endregion Validation
-                
+
                 if ($UseDestinationDefaultDirectories) {
                     $DefaultPath = (Get-DbaDefaultPath -SqlInstance $RestoreInstance)
                     $DestinationDataDirectory = $DefaultPath.Data
                     $DestinationLogDirectory = $DefaultPath.Log
                 }
-                
+
                 $BackupHistory = @()
             }
             process {
@@ -625,33 +625,33 @@ function Restore-DbaDatabase {
                             if ("BackupPath" -notin $f.PSobject.Properties.name) {
                                 Write-Message -Level Verbose -Message "adding BackupPath - $($_.FullName)"
                                 $f = $f | Select-Object *, @{
-                                    Name        = "BackupPath"; Expression = {
+                                    Name = "BackupPath"; Expression = {
                                         $_.FullName
                                     }
                                 }
                             }
                             if ("DatabaseName" -notin $f.PSobject.Properties.Name) {
                                 $f = $f | Select-Object *, @{
-                                    Name        = "DatabaseName"; Expression = {
+                                    Name = "DatabaseName"; Expression = {
                                         $_.Database
                                     }
                                 }
                             }
                             if ("Database" -notin $f.PSobject.Properties.Name) {
                                 $f = $f | Select-Object *, @{
-                                    Name            = "Database"; Expression = {
+                                    Name = "Database"; Expression = {
                                         $_.DatabaseName
                                     }
                                 }
                             }
                             if ("BackupSetGUID" -notin $f.PSobject.Properties.Name) {
                                 $f = $f | Select-Object *, @{
-                                    Name           = "BackupSetGUID"; Expression = {
+                                    Name = "BackupSetGUID"; Expression = {
                                         $_.BackupSetID
                                     }
                                 }
                             }
-                            
+
                             if ($f.BackupPath -like 'http*') {
                                 if ('' -ne $AzureCredential) {
                                     Write-Message -Message "At least one Azure backup passed in with a credential, assume correct" -Level Verbose
@@ -667,11 +667,11 @@ function Restore-DbaDatabase {
                                 }
                             }
                             $BackupHistory += $F | Select-Object *, @{
-                                Name           = "ServerName"; Expression = {
+                                Name = "ServerName"; Expression = {
                                     $_.SqlInstance
                                 }
                             }, @{
-                                Name                    = "BackupStartDate"; Expression = {
+                                Name = "BackupStartDate"; Expression = {
                                     $_.Start -as [DateTime]
                                 }
                             }
@@ -760,20 +760,20 @@ function Restore-DbaDatabase {
                     }
                     $pathSep = Get-DbaPathSep -Server $RestoreInstance
                     $null = $BackupHistory | Format-DbaBackupInformation -DataFileDirectory $DestinationDataDirectory -LogFileDirectory $DestinationLogDirectory -DestinationFileStreamDirectory $DestinationFileStreamDirectory -DatabaseFileSuffix $DestinationFileSuffix -DatabaseFilePrefix $DestinationFilePrefix -DatabaseNamePrefix $RestoredDatabaseNamePrefix -ReplaceDatabaseName $DatabaseName -Continue:$Continue -ReplaceDbNameInFile:$ReplaceDbNameInFile -FileMapping $FileMapping -PathSep $pathSep
-                    
+
                     if (Test-Bound -ParameterName FormatBackupInformation) {
                         Set-Variable -Name $FormatBackupInformation -Value $BackupHistory -Scope Global
                     }
                     if ($StopAfterFormatBackupInformation) {
                         return
                     }
-                    
+
                     $FilteredBackupHistory = $BackupHistory | Select-DbaBackupInformation -RestoreTime $RestoreTime -IgnoreLogs:$IgnoreLogBackups -ContinuePoints $ContinuePoints -LastRestoreType $LastRestoreType -DatabaseName $DatabaseName
-                    
+
                     if (Test-Bound -ParameterName SelectBackupInformation) {
                         Write-Message -Message "Setting $SelectBackupInformation to FilteredBackupHistory" -Level Verbose
                         Set-Variable -Name $SelectBackupInformation -Value $FilteredBackupHistory -Scope Global
-                        
+
                     }
                     if ($StopAfterSelectBackupInformation) {
                         return
@@ -839,7 +839,7 @@ function Restore-DbaDatabase {
                 }
             }
         }
-        
+
         $allinstances = $SqlInstance
         $null = $PSBoundParameters.Remove("SqlInstance")
     }
