@@ -845,7 +845,7 @@ function Restore-DbaDatabase {
     }
     process {
         foreach ($instance in $allinstances) {
-            Restore-IntDatabase -SqlInstance $instance $PSBoundParameters
+            Restore-IntDatabase -SqlInstance $instance @PSBoundParameters
         }
     }
 }
