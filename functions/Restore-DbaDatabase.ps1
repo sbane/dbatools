@@ -839,8 +839,13 @@ function Restore-DbaDatabase {
                 }
             }
         }
+
+        $boundparams = $PSBoundParameters
+        $null = $boundparams.Remove("SqlInstance")
     }
     process {
-        Restore-IntDatabase @PSBoundParameters    
+        foreach ($instance in $SqlInstance) {
+            Restore-IntDatabase -SqlInstance $instance @boundparams
+        }
     }
 }
