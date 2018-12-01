@@ -507,7 +507,7 @@ function Restore-DbaDatabase {
                 try {
                     $RestoreInstance = Connect-SqlInstance -SqlInstance $SqlInstance -SqlCredential $SqlCredential
                 } catch {
-                    Stop-Function -Message "Failure" -Category ConnectionError -ErrorRecord $_ -Target $instance -Continue
+                    Stop-Function -Message "Failure" -Category ConnectionError -ErrorRecord $_ -Target $SqlInstance -Continue
                     return
                 }
                 if ($PSCmdlet.ParameterSetName -eq "Restore") {
@@ -839,13 +839,13 @@ function Restore-DbaDatabase {
                 }
             }
         }
-
-        $boundparams = $PSBoundParameters
-        $null = $boundparams.Remove("SqlInstance")
+        
+        $allinstances = $SqlInstance
+        $null = $PSBoundParameters.Remove("SqlInstance")
     }
     process {
-        foreach ($instance in $SqlInstance) {
-            Restore-IntDatabase -SqlInstance $instance @boundparams
+        foreach ($instance in $allinstances) {
+            Restore-IntDatabase -SqlInstance $instance $PSBoundParameters
         }
     }
 }
