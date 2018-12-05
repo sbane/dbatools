@@ -4,7 +4,7 @@
 
 Got ideas for new commands? Please propose them as [issues](https://dbatools.io/issues) and let us know what you'd like to see. Bug reports should also be filed under this repository's [issues](https://github.com/sqlcollaborative/dbatools/issues) section.
 
-There's also over 1500 of us on the [SQL Server Community Slack](https://sqlcommunity.slack.com) in the #dbatools channel. Need an invite? Check out the [self-invite page](https://dbatools.io/slack/). Drop by if you'd like to chat about dbatools or even [join the team](https://dbatools.io/team)!
+There's also over 1500 of us on the [SQL Server Community Slack](https://sqlcommunity.slack.com) in the [#dbatools channel](https://sqlcommunity.slack.com/messages/C1M2WEASG). Need an invite? Check out the [self-invite page](https://dbatools.io/slack/). Drop by if you'd like to chat about dbatools or even [join the team](https://dbatools.io/team)!
 
 ## Installer
 
